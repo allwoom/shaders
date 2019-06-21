@@ -1,113 +1,40 @@
 <!doctype html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<title>Starfield</title>
-	
-	<style>
-		#glCanvas{
-			display:block;
-			margin:auto;
-			margin-top:100px;
-		}
-	</style>
+    <head>
+        <meta charset="utf-8">
+        <title>Starfield Shader</title>
+        <link rel="stylesheet" href="starfield.css"/>
 
-	<script src="shaderHelper.js" type="text/javascript"></script>
-	
-	<script id="vertexShader" type="x-shader/x-fragment">// <![CDATA[
-		// an attribute will receive data from a buffer
-		attribute vec4 a_position;
+        <script type="x-shader/x-vertex" id="vertexShader">//<![CDATA[]
+            // an attribute will receive data from a buffer
+            attribute vec4 a_position;
+            
+            void main() {
+                // gl_Position is a special variable a vertex shader is responsible for setting
+                gl_Position = a_position;
+            }
+            //]]>
+        </script>
+        
+        <script type="x-shader/x-fragment" id="fragmentShader">//<![CDATA[]          
+            #ifdef GL_ES
+                precision mediump float;
+            #endif
 
-		void main() {
-			// gl_Position is a special variable a vertex shader is responsible for setting
-			gl_Position = a_position;
-		}
-		//]]>
-	</script>
+            uniform float time;
 
-	<script id="fragmentShader" type="x-shader/x-fragment">// <![CDATA[
-	void main() {
-		gl_FragColor = vec4(0.0,1.0,0.0,1.0);  // green
-	}
-	//]]>
-	</script>
-</head>
+            void main() {
+                gl_FragColor = vec4(cos(time),sin(time),0.5,1.0);  // green
+            }
+            //]]>
+        </script>
 
-<body>
-	<canvas id="glCanvas" width="1000" height="600">
-	</canvas>
+        <script src="shaderHelper.js" type="text/javascript"></script>
+        <script src="starfield.js" type="text/javascript"></script>
+    </head>
 
-	<script type="text/javascript">	
-		var frag = "precision mediump float; varying vec4 v_color; uniform float time; void main() { gl_FragColor = vec4(fract(v_color.rgb + time), 1);}";
-
-		var _gl = null;
-		var _drawBuffer = null;
-		var _vertexShader = null;
-		var _fragmentShader = null;
-		var _program = null;
-
-		function main() {
-		  
-			initProgram();
-
-			if(_gl){
-			  	requestAnimationFrame(render);
-		  	}
-		}
-
-		function initProgram() {
-			const canvas = document.querySelector("#glCanvas");
-			
-			// Initialize the GL context
-			_gl = canvas.getContext("webgl");
-
-			// Only continue if WebGL is available and working
-			if (_gl === null) {
-				alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-				return;
-			}
-
-			var vertexShaderSource = document.getElementById("vertexShader").text;
-			_vertexShader = compileShader(_gl, vertexShaderSource, _gl.VERTEX_SHADER);			
-
-			var fragmentShaderSource = document.getElementById("fragmentShader").text;
-			_fragmentShader = compileShader(_gl, fragmentShaderSource, _gl.FRAGMENT_SHADER);
-
-			_program = createProgram(_gl, [ _vertexShader,_fragmentShader]);			
-
-			_drawBuffer = _gl.createBuffer();
-			_gl.bindBuffer(_gl.ARRAY_BUFFER, _drawBuffer);
-			_gl.bufferData(
-				_gl.ARRAY_BUFFER, 
-				new Float32Array([
-				-1.0, -1.0, 
-				1.0, -1.0, 
-				-1.0,  1.0, 
-				-1.0,  1.0, 
-				1.0, -1.0, 
-				1.0,  1.0]), 
-				_gl.STATIC_DRAW
-			);
-
-			// Draw with our program active
-			_gl.useProgram(_program);
-		}
-
-		function render(time){
-			// Set clear color to black, fully opaque
-			_gl.clearColor(0.0, 0.0, 0.0, 1.0);
-			// Clear the color buffer with specified clear color
-			_gl.clear(_gl.COLOR_BUFFER_BIT);
-			
-			var positionLocation = _gl.getAttribLocation(_program, "a_position");
-			_gl.enableVertexAttribArray(positionLocation);
-			_gl.vertexAttribPointer(positionLocation, 2, _gl.FLOAT, false, 0, 0);
-			_gl.drawArrays(_gl.TRIANGLES, 0, 6);
-
-		  	requestAnimationFrame(render);
-		}
-
-		main();		
-	</script>
-</body>
+    <body>
+        <canvas id="glCanvas" width="1000" height="600">
+        </canvas>
+    </body>
 </html>
