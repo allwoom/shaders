@@ -27,30 +27,23 @@
             
             // 2D Random
             float rand (in vec2 st) {
-                return fract(sin(dot(st.xy,
-                         vec2(12.9898,78.233)))
-                 * 43758.5453123);
+                return fract(sin(dot(st.xy,vec2(12.9898,78.233))) * 43758.5453123);
             }
 
+            // A VERY simple noise implementation
             float noise (in vec2 st) {
                 vec2 i = floor(st);
-                vec2 f = fract(st);
-            
-                // Four corners in 2D of a tile
+
+                // corners of a tile at st
                 float a = rand(i);
                 float b = rand(i + vec2(1.0, 0.0));
                 float c = rand(i + vec2(0.0, 1.0));
                 float d = rand(i + vec2(1.0, 1.0));
-            
-                // Smooth Interpolation
-            
-                // Cubic Hermine Curve.  Same as SmoothStep()
-                vec2 u = smoothstep(0.,1.,f);
-            
-                // Mix 4 coorners percentages
-                return mix(a, b, u.x) +
-                        (c - a)* u.y * (1.0 - u.x) +
-                        (d - b) * u.x * u.y;
+                
+                // average the random value
+                float avg = (a + b + c + d) / 4.0;
+                
+                return avg;
             }
 
             void main() {
@@ -62,13 +55,13 @@
                 float speed = resolution.x / 10.0; // units per second
                 vec2 direction = vec2(1.0, 0.0);
                 vec2 layer1Offset = st + direction * speed * time;
-                float strength = smoothstep(0.95, 1.0, noise(layer1Offset));
+                float strength = smoothstep(0.92, 1.0, noise(layer1Offset));
                 vec3 starColor = vec3(1.0, 1.0, 0.9) * strength;
                 fragmentColor += starColor;
 
                 speed = resolution.x / 5.0;
                 vec2 layer2Offset = vec2(st.x, st.y) + direction * speed * time;
-                strength = smoothstep(0.92, 1.0, noise(layer2Offset));
+                strength = smoothstep(0.85, 1.0, noise(layer2Offset));
                 starColor = vec3(1.0, 0.8, 0.9) * strength;
                 fragmentColor += starColor;
 
