@@ -59,8 +59,9 @@
                 vec3 starColor = vec3(1.0, 1.0, 0.9) * strength;
                 fragmentColor += starColor;
 
-                speed = resolution.x / 5.0;
-                vec2 layer2Offset = vec2(st.x, st.y) + direction * speed * time;
+                speed = resolution.x / 25.0;
+                float scale = 1.25;
+                vec2 layer2Offset = (vec2(st.x, st.y) + direction * speed * time)/scale;
                 strength = smoothstep(0.85, 1.0, noise(layer2Offset));
                 starColor = vec3(1.0, 0.8, 0.9) * strength;
                 fragmentColor += starColor;
