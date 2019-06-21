@@ -6,6 +6,7 @@ var _program = null;
 
 // Shader parameters
 var _timeLoc = null;
+var _lastTime = 0;
 var _elapsedTime = 0;
 var _resolutionLoc = null;
 
@@ -33,6 +34,7 @@ function log(msg, color){
             writeableMessage = JSON.stringify(msg);
         }
 
+        writeableMessage = writeableMessage.split("\n").join("<br/>");
         output.innerHTML += "<span style='color:" + color + "'>" + writeableMessage + "</span><br/>";
     }
 }
@@ -83,6 +85,8 @@ function initProgram() {
         _gl.uniform1f(_timeLoc, _elapsedTime);
         _gl.uniform2fv(_resolutionLoc, [canvas.clientWidth, canvas.clientHeight]);
 
+        _lastTime = performance.now();
+
         log("initialized")
     } catch (e) {
         logError(e);
@@ -90,8 +94,11 @@ function initProgram() {
 }
 
 function render(time) {
+    var elapsed = (time - _lastTime)/ 1000.0;
+    _lastTime = time;
+
     // Update shader variable(s)
-    _gl.uniform1f(_timeLoc, _elapsedTime += 1.0 / 60.0);
+    _gl.uniform1f(_timeLoc, _elapsedTime += elapsed);
 
     // Set clear color to black, fully opaque
     _gl.clearColor(0.0, 0.0, 0.0, 1.0);
