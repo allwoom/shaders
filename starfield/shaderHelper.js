@@ -9,23 +9,23 @@
  * @return {!WebGLShader} The shader.
  */
 function compileShader(gl, shaderSource, shaderType) {
-  // Create the shader object
-  var shader = gl.createShader(shaderType);
+    // Create the shader object
+    var shader = gl.createShader(shaderType);
 
-  // Set the shader source code.
-  gl.shaderSource(shader, shaderSource);
+    // Set the shader source code.
+    gl.shaderSource(shader, shaderSource);
 
-  // Compile the shader
-  gl.compileShader(shader);
+    // Compile the shader
+    gl.compileShader(shader);
 
-  // Check if it compiled
-  var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-  if (!success) {
-    // Something went wrong during compilation; get the error
-    throw "could not compile shader:" + gl.getShaderInfoLog(shader);
-  }
+    // Check if it compiled
+    var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!success) {
+        // Something went wrong during compilation; get the error
+        throw "could not compile shader:" + gl.getShaderInfoLog(shader);
+    }
 
-  return shader;
+    return shader;
 }
 
 
@@ -37,25 +37,25 @@ function compileShader(gl, shaderSource, shaderType) {
 * @return {!WebGLProgram} A program.
 */
 function createProgram(gl, shaders) {
-  // create a program.
-  var program = gl.createProgram();
+    // create a program.
+    var program = gl.createProgram();
 
-  // attach the shaders.
-  for (var s in shaders) {
-    gl.attachShader(program, shaders[s]);
-  }
+    // attach the shaders.
+    for (var s in shaders) {
+        gl.attachShader(program, shaders[s]);
+    }
 
-  // link the program.
-  gl.linkProgram(program);
+    // link the program.
+    gl.linkProgram(program);
 
-  // Check if it linked.
-  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-  if (!success) {
-    // something went wrong with the link
-    throw ("program filed to link:" + gl.getProgramInfoLog(program));
-  }
+    // Check if it linked.
+    var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+    if (!success) {
+        // something went wrong with the link
+        throw ("program filed to link:" + gl.getProgramInfoLog(program));
+    }
 
-  return program;
+    return program;
 };
 
 /**
@@ -67,7 +67,7 @@ function createProgram(gl, shaders) {
 * @param {Number} max2 
 */
 function mapValue(value, min1, max1, min2, max2) {
-  var percent = (value - min1) / (max1 - min1);
+    var percent = (value - min1) / (max1 - min1);
 
-  return percent * (max2 - min2) + min2;
+    return percent * (max2 - min2) + min2;
 }
